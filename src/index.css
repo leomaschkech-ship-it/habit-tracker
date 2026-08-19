@@ -1,0 +1,279 @@
+:root {
+  color-scheme: dark;
+
+  --color-bg: #0b1220;
+  --color-surface: #111c2e;
+  --color-surface-alt: #0f172a;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-text: #f1f5f9;
+  --color-text-body: #e2e8f0;
+  --color-text-muted: #94a3b8;
+
+  --color-accent: #34d399;
+  --color-accent-bg: rgba(52, 211, 153, 0.15);
+
+  --color-missed: #f87171;
+  --color-none: #334155;
+  --color-none-text: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text-body);
+}
+
+h1 {
+  color: var(--color-text);
+  font-size: 1.25rem;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app__content {
+  flex: 1;
+  padding: 1rem;
+  padding-bottom: 4.5rem;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+}
+
+.bottom-nav__item {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.bottom-nav__item--active {
+  font-weight: bold;
+  color: var(--color-accent);
+}
+
+.habit-list {
+  list-style: none;
+  padding: 0;
+}
+
+.calendar-view__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+
+.calendar-view__cell {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  padding: 0;
+}
+
+.calendar-view__cell--empty {
+  background: transparent;
+}
+
+.calendar-view__cell--done {
+  background: var(--color-accent);
+  color: #06281c;
+}
+
+.calendar-view__cell--missed {
+  background: var(--color-missed);
+  color: #2a0a0a;
+}
+
+.calendar-view__cell--future {
+  background: var(--color-none);
+  color: var(--color-none-text);
+}
+
+.calendar-view__cell--none {
+  background: var(--color-none);
+  color: var(--color-none-text);
+}
+
+.calendar-view__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0;
+  color: var(--color-text-body);
+}
+
+.calendar-view select {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.4rem;
+  color: var(--color-text);
+}
+
+.habit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.habit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--color-text-body);
+  font-size: 0.85rem;
+}
+
+.habit-form input,
+.habit-form select {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.habit-form input:focus,
+.habit-form select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.habit-form select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.habit-form__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-text-body);
+  font-size: 0.9rem;
+}
+
+.habit-form button[type='submit'] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #06281c;
+  font-weight: 700;
+}
+
+.habit-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 0.625rem;
+}
+
+.habit-card__icon {
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 10px;
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.habit-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.habit-card__name {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.habit-card__sub {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.125rem;
+}
+
+.habit-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.habit-card__streak {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  background: var(--color-accent-bg);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.habit-card--archived {
+  opacity: 0.5;
+}
+
+.habit-card__actions input[type='checkbox'] {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--color-accent);
+}
+
+.habit-card__stepper {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #06281c;
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.habit-card__timer {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  min-width: 2.5rem;
+  text-align: right;
+}
