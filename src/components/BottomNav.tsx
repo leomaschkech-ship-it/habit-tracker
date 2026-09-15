@@ -1,4 +1,4 @@
-export type Tab = 'today' | 'calendar' | 'manage';
+export type Tab = 'today' | 'calendar' | 'manage' | 'training';
 
 interface BottomNavProps {
   active: Tab;
@@ -9,6 +9,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'today', label: 'Heute' },
   { id: 'calendar', label: 'Kalender' },
   { id: 'manage', label: 'Verwalten' },
+  { id: 'training', label: 'Training' },
 ];
 
 export function BottomNav({ active, onChange }: BottomNavProps) {

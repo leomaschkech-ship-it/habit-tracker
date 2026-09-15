@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addDays, addMonths, firstWeekdayOffset, getMonthDays, toISODate } from './dateUtils';
+import { addDays, addMonths, firstWeekdayOffset, getMonthDays, toISODate, weekdayCode } from './dateUtils';
 
 describe('toISODate', () => {
   it('formatiert ein Datum als YYYY-MM-DD', () => {
@@ -58,5 +58,19 @@ describe('getMonthDays', () => {
 describe('firstWeekdayOffset', () => {
   it('gibt 0 zurück, wenn der Monat an einem Montag beginnt (Januar 2024)', () => {
     expect(firstWeekdayOffset(2024, 0)).toBe(0);
+  });
+});
+
+describe('weekdayCode', () => {
+  it('erkennt einen Montag', () => {
+    expect(weekdayCode('2026-09-07')).toBe('Mo');
+  });
+
+  it('erkennt einen Sonntag', () => {
+    expect(weekdayCode('2026-09-06')).toBe('So');
+  });
+
+  it('erkennt einen Mittwoch', () => {
+    expect(weekdayCode('2026-09-09')).toBe('Mi');
   });
 });

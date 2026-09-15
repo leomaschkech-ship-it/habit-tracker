@@ -40,3 +40,10 @@ export function firstWeekdayOffset(year: number, month: number): number {
   const jsDay = new Date(year, month, 1).getDay(); // 0=Sonntag..6=Samstag
   return (jsDay + 6) % 7; // 0=Montag..6=Sonntag
 }
+
+export function weekdayCode(isoDate: string): 'Mo' | 'Di' | 'Mi' | 'Do' | 'Fr' | 'Sa' | 'So' {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  const jsDay = new Date(year, month - 1, day).getDay(); // 0=Sonntag..6=Samstag
+  const codes: Array<'Mo' | 'Di' | 'Mi' | 'Do' | 'Fr' | 'Sa' | 'So'> = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  return codes[jsDay];
+}
