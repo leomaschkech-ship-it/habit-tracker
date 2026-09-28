@@ -56,6 +56,12 @@ export function useHabitStore() {
     setEntries((prev) => upsertEntry(prev, habit, date, input));
   }
 
+  // For callers whose input depends on the latest entries (e.g. adding to a
+  // value when several updates are applied in one batch).
+  function updateEntry(habit: Habit, date: string, computeInput: (entries: DailyEntry[]) => EntryInput) {
+    setEntries((prev) => upsertEntry(prev, habit, date, computeInput(prev)));
+  }
+
   function incrementCount(habit: Habit, date: string) {
     setEntries((prev) => {
       const currentValue = findEntry(prev, habit.id, date)?.value ?? 0;
@@ -93,6 +99,7 @@ export function useHabitStore() {
     removeHabit,
     editHabit,
     setEntry,
+    updateEntry,
     incrementCount,
     startStopwatch,
     stopStopwatch,
