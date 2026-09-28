@@ -28,7 +28,7 @@ export function App() {
       <main className="app__content">
         {activeTab === 'today' && <TodayView store={store} />}
         {activeTab === 'calendar' && <CalendarView store={store} />}
-        {activeTab === 'manage' && <ManageView store={store} />}
+        {activeTab === 'manage' && <ManageView store={store} trainingStore={trainingStore} />}
         {activeTab === 'training' && <TrainingView store={trainingStore} />}
       </main>
       <BottomNav active={activeTab} onChange={setActiveTab} />

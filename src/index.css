@@ -624,3 +624,45 @@ button {
   flex-shrink: 0;
   align-self: center;
 }
+
+.garmin-import {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.garmin-import h2 {
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.garmin-import__hint,
+.garmin-import__message {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.garmin-import__picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.garmin-import__target {
+  margin-top: 0.4rem;
+  width: 100%;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.4rem;
+  color: var(--color-text);
+}
+
+.garmin-import__apply {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #06281c;
+  font-weight: 700;
+}

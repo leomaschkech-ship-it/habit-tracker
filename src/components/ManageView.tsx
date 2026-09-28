@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { GarminImport } from '../garmin/GarminImport';
 import type { HabitStore } from '../hooks/useHabitStore';
+import type { TrainingStore } from '../hooks/useTrainingStore';
 import type { Habit } from '../types';
 import { habitIcon } from './habitIcon';
 import { HabitForm } from './HabitForm';
 
-export function ManageView({ store }: { store: HabitStore }) {
+export function ManageView({ store, trainingStore }: { store: HabitStore; trainingStore: TrainingStore }) {
   const [showForm, setShowForm] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
 
@@ -74,6 +76,7 @@ export function ManageView({ store }: { store: HabitStore }) {
           + Neue Routine
         </button>
       )}
+      <GarminImport habitStore={store} trainingStore={trainingStore} />
     </div>
   );
 }
