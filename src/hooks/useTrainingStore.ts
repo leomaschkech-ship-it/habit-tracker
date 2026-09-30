@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { todayISO } from '../dateUtils';
 import { loadTrainingState, saveTrainingState } from '../training/trainingStorage';
-import type { BaselineTest, EquipmentAnswer, ExerciseRating, TrainingState } from '../training/types';
+import { mergeGarminActivities } from '../training/garminImport';
+import type { BaselineTest, CardioModeAnswer, EquipmentAnswer, ExerciseRating, GarminActivity, TrainingState } from '../training/types';
 
 export function useTrainingStore() {
   const [state, setState] = useState<TrainingState>(() => loadTrainingState());
@@ -43,6 +44,13 @@ export function useTrainingStore() {
     }));
   }
 
+  function setCardioModeAnswer(date: string, mode: 'run' | 'bike') {
+    setState((prev) => ({
+      ...prev,
+      cardioModeAnswers: [...prev.cardioModeAnswers.filter((answer) => answer.date !== date), { date, mode }],
+    }));
+  }
+
   function addBaselineTest(test: BaselineTest) {
     setState((prev) => ({ ...prev, baselineTests: [...prev.baselineTests, test] }));
   }
@@ -62,10 +70,23 @@ export function useTrainingStore() {
     }));
   }
 
+  function importGarminData(activities: GarminActivity[], vo2Max?: { value: number; date: string }) {
+    setState((prev) => ({
+      ...prev,
+      garminActivities: mergeGarminActivities(prev.garminActivities, activities),
+      garminVo2Max: vo2Max ?? prev.garminVo2Max,
+    }));
+  }
+
   const equipmentAnswerFor = useMemo(() => {
     return (date: string): EquipmentAnswer | undefined =>
       state.equipmentAnswers.find((answer) => answer.date === date);
   }, [state.equipmentAnswers]);
+
+  const cardioModeAnswerFor = useMemo(() => {
+    return (date: string): CardioModeAnswer | undefined =>
+      state.cardioModeAnswers.find((answer) => answer.date === date);
+  }, [state.cardioModeAnswers]);
 
   return {
     state,
@@ -77,7 +98,10 @@ export function useTrainingStore() {
     addBaselineTest,
     markRunCompleted,
     unmarkRunCompleted,
+    importGarminData,
     equipmentAnswerFor,
+    setCardioModeAnswer,
+    cardioModeAnswerFor,
   };
 }
 

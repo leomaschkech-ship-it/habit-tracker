@@ -42,6 +42,9 @@ describe('trainingStorage', () => {
       equipmentAnswers: [{ date: '2026-09-07', pullupBar: true, kettlebell: false }],
       baselineTests: [{ date: '2026-09-07', pullups: 20 }],
       completedRuns: [{ runId: 'mo-run-easy', date: '2026-09-07' }],
+      garminActivities: [{ date: '2026-09-07', type: 'running', distanceMeters: 10000 }],
+      garminVo2Max: { value: 50.2, date: '2026-09-07' },
+      cardioModeAnswers: [{ date: '2026-09-07', mode: 'bike' }],
     };
     saveTrainingState(state);
     expect(loadTrainingState()).toEqual(state);
@@ -55,5 +58,17 @@ describe('trainingStorage', () => {
   it('füllt fehlende Felder mit leeren Defaults auf, wenn der gespeicherte Wert unvollständig ist', () => {
     localStorage.setItem('habit-tracker:training', JSON.stringify({ currentWeek: 2 }));
     expect(loadTrainingState()).toEqual({ ...createEmptyTrainingState(), currentWeek: 2 });
+  });
+
+  it('defaults garminActivities to [] and garminVo2Max to undefined when missing', () => {
+    localStorage.setItem('habit-tracker:training', JSON.stringify({ currentWeek: 2 }));
+    const state = loadTrainingState();
+    expect(state.garminActivities).toEqual([]);
+    expect(state.garminVo2Max).toBeUndefined();
+  });
+
+  it('defaults cardioModeAnswers to [] when missing', () => {
+    localStorage.setItem('habit-tracker:training', JSON.stringify({ currentWeek: 2 }));
+    expect(loadTrainingState().cardioModeAnswers).toEqual([]);
   });
 });

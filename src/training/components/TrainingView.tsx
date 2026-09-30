@@ -5,8 +5,10 @@ import { resolveDayPlan } from '../resolveDayPlan';
 import { WEEK_PLAN, isDeloadWeek } from '../plan';
 import type { Weekday } from '../types';
 import { BaselineForm } from './BaselineForm';
+import { CycleCard } from './CycleCard';
 import { DaySummary } from './DaySummary';
 import { ExerciseCard } from './ExerciseCard';
+import { GarminImportPanel } from './GarminImportPanel';
 import { RunCard } from './RunCard';
 import { WeekOverview } from './WeekOverview';
 
@@ -29,6 +31,7 @@ function mondayOf(isoDate: string): string {
 
 export function TrainingView({ store }: { store: TrainingStore }) {
   const [showBaseline, setShowBaseline] = useState(false);
+  const [showGarminImport, setShowGarminImport] = useState(false);
   const [view, setView] = useState<'today' | 'week'>('today');
   const today = todayISO();
   const todayCode = weekdayCode(today);
@@ -39,7 +42,9 @@ export function TrainingView({ store }: { store: TrainingStore }) {
   const needsEquipmentAnswer = (dayPlan.exercises ?? []).some((exercise) => exercise.equipment !== undefined);
   const equipmentAnswer = store.equipmentAnswerFor(today);
   const resolvedExercises = resolveDayPlan(dayPlan, store.state.currentWeek, equipmentAnswer, store.state.overrides);
-  const hasContent = (dayPlan.runs?.length ?? 0) > 0 || (dayPlan.exercises?.length ?? 0) > 0;
+  const hasCycleOption = (dayPlan.cycles?.length ?? 0) > 0;
+  const cardioMode = store.cardioModeAnswerFor(today)?.mode ?? 'run';
+  const hasContent = (dayPlan.runs?.length ?? 0) > 0 || (dayPlan.cycles?.length ?? 0) > 0 || (dayPlan.exercises?.length ?? 0) > 0;
   const monday = mondayOf(today);
 
   function hasActivityOn(date: string): boolean {
@@ -132,21 +137,61 @@ export function TrainingView({ store }: { store: TrainingStore }) {
                 </div>
               )}
 
+              {hasCycleOption && (
+                <div className="training-view__view-toggle">
+                  <button
+                    type="button"
+                    className={
+                      cardioMode === 'run'
+                        ? 'training-view__view-toggle-btn training-view__view-toggle-btn--active'
+                        : 'training-view__view-toggle-btn'
+                    }
+                    onClick={() => store.setCardioModeAnswer(today, 'run')}
+                  >
+                    Laufen
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      cardioMode === 'bike'
+                        ? 'training-view__view-toggle-btn training-view__view-toggle-btn--active'
+                        : 'training-view__view-toggle-btn'
+                    }
+                    onClick={() => store.setCardioModeAnswer(today, 'bike')}
+                  >
+                    Rad
+                  </button>
+                </div>
+              )}
+
               {dayPlan.strengthWarmup && <p className="training-view__warmup">Warm-up: {dayPlan.strengthWarmup}</p>}
 
               {hasContent ? (
                 <ul className="habit-list">
-                  {dayPlan.runs?.map((run) => (
-                    <RunCard
-                      key={run.id}
-                      run={run}
-                      week={store.state.currentWeek}
-                      done={store.state.completedRuns.some((entry) => entry.runId === run.id && entry.date === today)}
-                      onToggleDone={(nextDone) =>
-                        nextDone ? store.markRunCompleted(run.id, today) : store.unmarkRunCompleted(run.id, today)
-                      }
-                    />
-                  ))}
+                  {cardioMode === 'run' &&
+                    dayPlan.runs?.map((run) => (
+                      <RunCard
+                        key={run.id}
+                        run={run}
+                        week={store.state.currentWeek}
+                        done={store.state.completedRuns.some((entry) => entry.runId === run.id && entry.date === today)}
+                        onToggleDone={(nextDone) =>
+                          nextDone ? store.markRunCompleted(run.id, today) : store.unmarkRunCompleted(run.id, today)
+                        }
+                      />
+                    ))}
+                  {cardioMode === 'bike' &&
+                    dayPlan.cycles?.map((cycle) => (
+                      <CycleCard
+                        key={cycle.id}
+                        cycle={cycle}
+                        week={store.state.currentWeek}
+                        done={store.state.completedRuns.some((entry) => entry.runId === cycle.id && entry.date === today)}
+                        onToggleDone={(nextDone) =>
+                          nextDone ? store.markRunCompleted(cycle.id, today) : store.unmarkRunCompleted(cycle.id, today)
+                        }
+                      />
+                    ))}
                   {resolvedExercises.map((exercise) => (
                     <ExerciseCard
                       key={exercise.id}
@@ -187,6 +232,11 @@ export function TrainingView({ store }: { store: TrainingStore }) {
           onClose={() => setShowBaseline(false)}
         />
       )}
+
+      <button type="button" onClick={() => setShowGarminImport(true)}>
+        Garmin-Daten importieren
+      </button>
+      {showGarminImport && <GarminImportPanel store={store} />}
     </div>
   );
 }

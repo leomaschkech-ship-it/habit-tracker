@@ -22,9 +22,19 @@ export interface RunPrescription {
   coolDown?: string;
 }
 
+export interface CyclePrescription {
+  id: string;
+  name: string;
+  hrZone: { min: number; max: number };
+  detailByWeek: (week: number) => string;
+  warmup?: string;
+  coolDown?: string;
+}
+
 export interface DayPlan {
   day: Weekday;
   runs?: RunPrescription[];
+  cycles?: CyclePrescription[];
   exercises?: ExercisePrescription[];
   strengthWarmup?: string;
 }
@@ -63,6 +73,28 @@ export interface CompletedRun {
   date: string;
 }
 
+export interface CardioModeAnswer {
+  date: string;
+  mode: 'run' | 'bike';
+}
+
+export interface GarminExerciseSet {
+  exerciseName?: string;
+  reps?: number;
+  weightKg?: number;
+}
+
+export interface GarminActivity {
+  date: string;
+  type: 'running' | 'strength' | 'other';
+  name?: string;
+  distanceMeters?: number;
+  durationSec?: number;
+  averagePaceSecPerKm?: number;
+  averageHrBpm?: number;
+  exerciseSets?: GarminExerciseSet[];
+}
+
 export interface TrainingState {
   currentWeek: number;
   ratings: ExerciseRating[];
@@ -70,6 +102,9 @@ export interface TrainingState {
   equipmentAnswers: EquipmentAnswer[];
   baselineTests: BaselineTest[];
   completedRuns: CompletedRun[];
+  garminActivities: GarminActivity[];
+  garminVo2Max?: { value: number; date: string };
+  cardioModeAnswers: CardioModeAnswer[];
 }
 
 export function createEmptyTrainingState(): TrainingState {
@@ -80,5 +115,7 @@ export function createEmptyTrainingState(): TrainingState {
     equipmentAnswers: [],
     baselineTests: [],
     completedRuns: [],
+    garminActivities: [],
+    cardioModeAnswers: [],
   };
 }

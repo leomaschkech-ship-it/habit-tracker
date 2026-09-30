@@ -117,4 +117,48 @@ describe('WEEK_PLAN', () => {
       expect(exercise.substitute).toBeDefined();
     }
   });
+
+  it('jeder Kondition-Tag (Mo/Mi/Fr) hat sowohl eine Lauf- als auch eine Rad-Alternative', () => {
+    for (const day of ['Mo', 'Mi', 'Fr'] as const) {
+      const dayPlan = WEEK_PLAN.find((d) => d.day === day)!;
+      expect(dayPlan.runs).toHaveLength(1);
+      expect(dayPlan.cycles).toHaveLength(1);
+    }
+  });
+
+  it('Intervall-Rad (Mittwoch) folgt derselben Wochen-Progression wie der Intervall-Lauf', () => {
+    const wednesday = WEEK_PLAN.find((day) => day.day === 'Mi')!;
+    const run = wednesday.runs!.find((r) => r.id === 'wed-run-intervals')!;
+    const cycle = wednesday.cycles!.find((c) => c.id === 'wed-cycle-intervals')!;
+    expect(cycle.detailByWeek(1)).toBe(run.detailByWeek(1));
+    expect(cycle.detailByWeek(9)).toBe(run.detailByWeek(9));
+    expect(cycle.hrZone).toEqual(run.hrZone);
+  });
+
+  it('Montags-Rad und Freitags-Rad haben eine konstante Zeitangabe (kein Distanz-Format)', () => {
+    const monday = WEEK_PLAN.find((day) => day.day === 'Mo')!;
+    const moCycle = monday.cycles!.find((c) => c.id === 'mo-cycle-easy')!;
+    expect(moCycle.detailByWeek(1)).toBe('45–60 min');
+    expect(moCycle.detailByWeek(8)).toBe('45–60 min');
+
+    const friday = WEEK_PLAN.find((day) => day.day === 'Fr')!;
+    const friCycle = friday.cycles!.find((c) => c.id === 'fri-cycle-tempo')!;
+    expect(friCycle.detailByWeek(1)).toBe('25–35 min');
+  });
+
+  it('alle Rad-Ids sind eindeutig und überschneiden sich nicht mit Lauf-Ids', () => {
+    const cycleIds = WEEK_PLAN.flatMap((day) => day.cycles ?? []).map((cycle) => cycle.id);
+    const runIds = WEEK_PLAN.flatMap((day) => day.runs ?? []).map((run) => run.id);
+    expect(new Set(cycleIds).size).toBe(cycleIds.length);
+    expect(cycleIds.some((id) => runIds.includes(id))).toBe(false);
+  });
+
+  it('keine Id ist über Übungen, Läufe und Rad-Einheiten hinweg doppelt vergeben', () => {
+    const allIds = [
+      ...WEEK_PLAN.flatMap((day) => day.exercises ?? []).map((exercise) => exercise.id),
+      ...WEEK_PLAN.flatMap((day) => day.runs ?? []).map((run) => run.id),
+      ...WEEK_PLAN.flatMap((day) => day.cycles ?? []).map((cycle) => cycle.id),
+    ];
+    expect(new Set(allIds).size).toBe(allIds.length);
+  });
 });

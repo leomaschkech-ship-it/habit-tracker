@@ -17,6 +17,10 @@ export function loadTrainingState(): TrainingState {
       equipmentAnswers: Array.isArray(parsed.equipmentAnswers) ? parsed.equipmentAnswers : empty.equipmentAnswers,
       baselineTests: Array.isArray(parsed.baselineTests) ? parsed.baselineTests : empty.baselineTests,
       completedRuns: Array.isArray(parsed.completedRuns) ? parsed.completedRuns : empty.completedRuns,
+      garminActivities: Array.isArray(parsed.garminActivities) ? parsed.garminActivities : empty.garminActivities,
+      garminVo2Max:
+        parsed.garminVo2Max && typeof parsed.garminVo2Max === 'object' ? parsed.garminVo2Max : empty.garminVo2Max,
+      cardioModeAnswers: Array.isArray(parsed.cardioModeAnswers) ? parsed.cardioModeAnswers : empty.cardioModeAnswers,
     };
   } catch {
     return createEmptyTrainingState();

@@ -1,4 +1,4 @@
-import type { DayPlan, ExercisePrescription, RunPrescription } from './types';
+import type { CyclePrescription, DayPlan, ExercisePrescription, RunPrescription } from './types';
 
 // exercise/run ids are localStorage keys for ratings/overrides — never rename an existing id.
 
@@ -32,6 +32,13 @@ const moPushupsLight: ExercisePrescription = {
   name: 'Liegestütze leicht',
   // Pause nicht im Plan-Dokument spezifiziert - 30 sec als sinnvoller Default für leichte Aktivierung.
   setsRepsByWeek: () => ({ sets: 2, reps: '10', restSec: 30 }),
+};
+
+const moCycleEasy: CyclePrescription = {
+  id: 'mo-cycle-easy',
+  name: 'Aerobe Basis (Zone 2) – Rad',
+  hrZone: { min: 113, max: 132 },
+  detailByWeek: () => '45–60 min',
 };
 
 // --- Dienstag ---
@@ -104,10 +111,12 @@ const tueDeadhangs: ExercisePrescription = {
   setsRepsByWeek: () => ({ sets: 3, reps: 'max. Zeit (Ziel 20–30 sec)', restSec: 60 }),
 };
 
-const tuePlankTaps: ExercisePrescription = {
-  id: 'tue-planktaps',
-  name: 'Arm-Plank-Taps (Finisher)',
-  setsRepsByWeek: () => ({ sets: 1, reps: '20 Taps', restSec: 0 }),
+const tueKbRussianTwists: ExercisePrescription = {
+  id: 'tue-kb-russian-twists',
+  name: 'Kettlebell Russian Twists',
+  equipment: 'kettlebell',
+  substitute: { name: 'Russian Twists mit gefülltem Rucksack', setsReps: '3×20 (10 pro Seite)' },
+  setsRepsByWeek: () => ({ sets: 3, reps: '20 (10 pro Seite)', restSec: 30 }),
 };
 
 // --- Mittwoch ---
@@ -126,6 +135,22 @@ const wedRunIntervals: RunPrescription = {
     ]),
   warmup: '10 min leicht trotten',
   coolDown: '5 min auslaufen',
+};
+
+const wedCycleIntervals: CyclePrescription = {
+  id: 'wed-cycle-intervals',
+  name: 'Intervall-Training (VO2 Max) – Rad',
+  hrZone: { min: 169, max: 179 },
+  detailByWeek: (week) =>
+    byWeekBand(week, [
+      { upTo: 2, value: '4×4 min' },
+      { upTo: 4, value: '5×4 min' },
+      { upTo: 6, value: '6×4 min' },
+      { upTo: 8, value: '5×5 min' },
+      { upTo: Infinity, value: '6×5 min' },
+    ]),
+  warmup: '10 min locker eintreten',
+  coolDown: '5 min locker austreten',
 };
 
 // --- Donnerstag (keine Wochen-Progression im Plan-Dokument, konstant) ---
@@ -186,6 +211,15 @@ const friRunTempo: RunPrescription = {
     ]),
   warmup: '10 min Easy',
   coolDown: '5–10 min Easy',
+};
+
+const friCycleTempo: CyclePrescription = {
+  id: 'fri-cycle-tempo',
+  name: 'Tempo – Rad',
+  hrZone: { min: 150, max: 169 },
+  detailByWeek: () => '25–35 min',
+  warmup: '10 min locker eintreten',
+  coolDown: '5 min locker austreten',
 };
 
 // --- Samstag ---
@@ -251,19 +285,19 @@ const satShoulderHold: ExercisePrescription = {
 };
 
 export const WEEK_PLAN: DayPlan[] = [
-  { day: 'Mo', runs: [moRunEasy], exercises: [moPushupsLight] },
+  { day: 'Mo', runs: [moRunEasy], cycles: [moCycleEasy], exercises: [moPushupsLight] },
   {
     day: 'Di',
-    exercises: [tueKbPush, tuePushups, tueDips, tuePullups, tueKbPullover, tueDeadhangs, tuePlankTaps],
+    exercises: [tueDips, tuePushups, tueKbPush, tuePullups, tueKbPullover, tueDeadhangs, tueKbRussianTwists],
     strengthWarmup: 'Kettlebell Halos (2×8 pro Richtung), 10 Push-Ups locker',
   },
-  { day: 'Mi', runs: [wedRunIntervals] },
+  { day: 'Mi', runs: [wedRunIntervals], cycles: [wedCycleIntervals] },
   {
     day: 'Do',
     exercises: [thuGobletSquat, thuBulgarianSplit, thuSingleLegDeadlift, thuGluteBridge, thuCoreCircuit, thuCalfRaises],
     strengthWarmup: '20 Bodyweight Squats, 10 Lunges pro Bein, 5 Min Mobilität',
   },
-  { day: 'Fr', runs: [friRunTempo] },
+  { day: 'Fr', runs: [friRunTempo], cycles: [friCycleTempo] },
   {
     day: 'Sa',
     exercises: [
